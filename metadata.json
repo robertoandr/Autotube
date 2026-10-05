@@ -1,0 +1,8 @@
+{
+  "name": "AutoTube - Piloto Automático para YouTube",
+  "description": "Painel de automação e piloto de canais do YouTube com múltiplos provedores de IA (Gemini, Claude, OpenAI, Ollama), integração YouTube Data API e modo de aprovação humana estrito.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
