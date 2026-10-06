@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Sparkles, Youtube, CheckCircle2 } from 'lucide-react';
+import { Play, Sparkles, Youtube } from 'lucide-react';
 import { VideoItem } from '../types';
 
 interface ThumbnailPreviewProps {
@@ -23,13 +23,7 @@ export const ThumbnailPreview: React.FC<ThumbnailPreviewProps> = ({
       <div className="flex items-center justify-between text-xs text-neutral-400">
         <span className="font-medium text-neutral-300 flex items-center gap-1.5">
           <Youtube className="w-3.5 h-3.5 text-red-500" />
-          Preview no feed do YouTube ({isShort ? 'Shorts 9:16' : 'Vídeo Longo 16:9'})
-        </span>
-        <span className="text-[11px] text-neutral-400 flex items-center gap-1.5">
-          <span>Potencial:</span>
-          <span className="text-emerald-400 font-semibold bg-emerald-950/70 border border-emerald-800/50 px-2 py-0.5 rounded">
-            {item.appealQuality || 'Forte'}
-          </span>
+          Conceito de prévia, não enviado ao YouTube ({isShort ? 'Shorts 9:16' : 'Vídeo longo 16:9'})
         </span>
       </div>
 
@@ -51,7 +45,7 @@ export const ThumbnailPreview: React.FC<ThumbnailPreviewProps> = ({
             {/* Top Shorts Header */}
             <div className="relative z-10 flex items-center justify-between">
               <span className="text-[10px] font-bold tracking-wider uppercase bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-white border border-white/10">
-                #SHORTS
+                CONCEITO DE SHORT
               </span>
               <span className="text-[10px] font-mono text-white/80 bg-black/40 px-1.5 py-0.5 rounded">
                 {item.estimatedDuration}
@@ -77,12 +71,11 @@ export const ThumbnailPreview: React.FC<ThumbnailPreviewProps> = ({
               </p>
               <div className="flex items-center gap-2 mt-2">
                 <div className="w-5 h-5 rounded-full bg-red-600 flex items-center justify-center text-[10px] font-bold text-white">
-                  AT
+                  LS
                 </div>
                 <span className="text-[11px] text-neutral-300 font-medium truncate">
                   {channelName}
                 </span>
-                <CheckCircle2 className="w-3 h-3 text-neutral-400 shrink-0" />
               </div>
             </div>
           </div>
@@ -102,7 +95,7 @@ export const ThumbnailPreview: React.FC<ThumbnailPreviewProps> = ({
               {/* Badges */}
               <div className="relative z-10 flex items-center justify-between">
                 <span className="text-[10px] font-bold tracking-wider uppercase bg-red-600 px-2 py-0.5 rounded text-white shadow">
-                  HD 1080p
+                  Conceito visual (não é arquivo final)
                 </span>
                 <span className="text-[11px] font-mono font-medium text-white bg-black/80 px-2 py-0.5 rounded backdrop-blur-sm">
                   {item.estimatedDuration}
@@ -127,7 +120,7 @@ export const ThumbnailPreview: React.FC<ThumbnailPreviewProps> = ({
             {/* Video Card Title & Channel Row */}
             <div className="flex gap-3 mt-3">
               <div className="w-9 h-9 rounded-full bg-red-600 flex items-center justify-center text-xs font-bold text-white shrink-0 mt-0.5">
-                AT
+                LS
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="text-sm font-semibold text-white leading-tight line-clamp-2">
@@ -135,11 +128,6 @@ export const ThumbnailPreview: React.FC<ThumbnailPreviewProps> = ({
                 </h4>
                 <div className="flex items-center gap-1.5 text-xs text-neutral-400 mt-1">
                   <span>{channelName}</span>
-                  <CheckCircle2 className="w-3 h-3 text-neutral-400" />
-                  <span>&bull;</span>
-                  <span>14 mil visualizações</span>
-                  <span>&bull;</span>
-                  <span>agendado</span>
                 </div>
               </div>
             </div>
