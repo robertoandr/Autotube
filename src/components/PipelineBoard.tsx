@@ -1,17 +1,6 @@
 import React from 'react';
-import { 
-  Sparkles, 
-  Clock, 
-  CheckCircle2, 
-  Send, 
-  Calendar, 
-  Youtube, 
-  ExternalLink, 
-  ArrowRight,
-  ShieldCheck,
-  AlertCircle
-} from 'lucide-react';
-import { VideoItem, PipelineStatus } from '../types';
+import { Clock, CheckCircle2, ShieldCheck, Sparkles, FileText, Archive } from 'lucide-react';
+import { VideoItem } from '../types';
 
 interface PipelineBoardProps {
   items: VideoItem[];
@@ -20,128 +9,20 @@ interface PipelineBoardProps {
   approvalMode: boolean;
 }
 
-const COLUMNS: { key: PipelineStatus; label: string; icon: any; color: string }[] = [
-  { key: 'idea', label: 'Ideias em Rascunho', icon: Sparkles, color: 'text-purple-400' },
-  { key: 'scripted', label: 'Roteirizados', icon: Clock, color: 'text-sky-400' },
-  { key: 'pending_approval', label: 'Aguardando Aprovação', icon: ShieldCheck, color: 'text-amber-400' },
-  { key: 'approved', label: 'Aprovados & Agendados', icon: CheckCircle2, color: 'text-emerald-400' },
-  { key: 'published', label: 'Publicados no YouTube', icon: Youtube, color: 'text-red-500' },
+const columns = [
+  { key: 'idea' as const, label: 'Ideias', icon: Sparkles, filter: (item: VideoItem) => item.status === 'idea' },
+  { key: 'scripted' as const, label: 'Roteirizados', icon: FileText, filter: (item: VideoItem) => item.status === 'scripted' },
+  { key: 'pending' as const, label: 'Aguardando aprovação', icon: ShieldCheck, filter: (item: VideoItem) => item.status === 'pending_approval' },
+  { key: 'approved' as const, label: 'Aprovados localmente, não publicados', icon: CheckCircle2, filter: (item: VideoItem) => item.status === 'approved' || item.status === 'scheduled' },
+  { key: 'rejected' as const, label: 'Rejeitados, arquivados localmente', icon: Archive, filter: (item: VideoItem) => item.status === 'rejected' },
 ];
 
-export const PipelineBoard: React.FC<PipelineBoardProps> = ({
-  items,
-  onSelectItem,
-  onOpenGenerator,
-  approvalMode,
-}) => {
-  return (
-    <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <h2 className="text-lg font-bold text-white tracking-tight">
-            Pipeline Editorial do Canal
-          </h2>
-          <p className="text-xs text-neutral-400">
-            Acompanhe o fluxo autônomo desde a geração do roteiro até o envio via YouTube Data API.
-          </p>
-        </div>
-
-        <button
-          onClick={onOpenGenerator}
-          className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-semibold text-xs transition-colors self-start sm:self-auto shadow-md shadow-red-950/40"
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Novo Roteiro com IA</span>
-        </button>
-      </div>
-
-      {/* Columns Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {COLUMNS.map((col) => {
-          const colItems = items.filter((item) => {
-            if (col.key === 'approved') {
-              return item.status === 'approved' || item.status === 'scheduled';
-            }
-            return item.status === col.key;
-          });
-
-          const IconComponent = col.icon;
-
-          return (
-            <div
-              key={col.key}
-              className="bg-neutral-900/60 rounded-2xl border border-neutral-800/80 p-3 flex flex-col min-h-[500px]"
-            >
-              {/* Column Header */}
-              <div className="flex items-center justify-between pb-3 mb-3 border-b border-neutral-800">
-                <div className="flex items-center gap-2">
-                  <IconComponent className={`w-4 h-4 ${col.color}`} />
-                  <span className="text-xs font-bold text-white">{col.label}</span>
-                </div>
-                <span className="text-xs font-mono font-medium text-neutral-400 bg-neutral-800 px-2 py-0.5 rounded-full">
-                  {colItems.length}
-                </span>
-              </div>
-
-              {/* Column Content */}
-              <div className="space-y-3 flex-1 overflow-y-auto pr-0.5">
-                {colItems.map((item) => (
-                  <div
-                    key={item.id}
-                    onClick={() => onSelectItem(item.id)}
-                    className="p-3 rounded-xl bg-neutral-950/90 border border-neutral-800 hover:border-neutral-700 hover:bg-neutral-900/80 cursor-pointer transition-all shadow-sm group"
-                  >
-                    {/* Format Badge */}
-                    <div className="flex items-center justify-between text-[10px] text-neutral-400 mb-2">
-                      <span className="font-mono uppercase bg-neutral-800/90 text-neutral-300 px-1.5 py-0.5 rounded font-semibold">
-                        {item.format === 'short' ? '⚡ Shorts' : '🎬 16:9'}
-                      </span>
-                      <span className="text-[10px] text-emerald-400 font-medium">
-                        {item.appealQuality || 'Forte'}
-                      </span>
-                    </div>
-
-                    <h4 className="text-xs font-semibold text-white leading-snug line-clamp-2 group-hover:text-red-300 transition-colors">
-                      {item.title}
-                    </h4>
-
-                    {/* Thumbnail Concept Mini Tag */}
-                    <div className="mt-2.5 pt-2 border-t border-neutral-900 flex items-center justify-between text-[11px] text-neutral-400">
-                      <span className="truncate max-w-[120px] text-neutral-400">
-                        {item.niche}
-                      </span>
-
-                      {item.status === 'pending_approval' && (
-                        <span className="text-[10px] font-semibold text-amber-400 flex items-center gap-1">
-                          Aprovar &rarr;
-                        </span>
-                      )}
-
-                      {item.status === 'published' && item.publishedUrl && (
-                        <a
-                          href={item.publishedUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-[10px] text-red-400 hover:underline flex items-center gap-0.5"
-                        >
-                          Assistir <ExternalLink className="w-2.5 h-2.5" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                ))}
-
-                {colItems.length === 0 && (
-                  <div className="h-32 flex flex-col items-center justify-center border border-dashed border-neutral-800 rounded-xl text-neutral-400 text-xs p-3 text-center">
-                    <span>Nenhum item nesta etapa</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-};
+export const PipelineBoard: React.FC<PipelineBoardProps> = ({ items, onSelectItem, onOpenGenerator }) => (
+  <div className="space-y-4">
+    <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center"><div><h2 className="text-lg font-bold text-white">Pipeline editorial</h2><p className="text-xs text-neutral-400">Visão local. Upload, agendamento e publicação não estão conectados.</p></div><button onClick={onOpenGenerator} className="flex items-center gap-2 self-start rounded-xl bg-red-600 px-3.5 py-2 text-xs font-semibold text-white hover:bg-red-500"><Sparkles className="h-4 w-4" />Criar rascunho</button></div>
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">{columns.map(({ key, label, icon: Icon, filter }) => {
+      const rows = items.filter(filter);
+      return <section key={key} className="flex min-h-80 flex-col rounded-2xl border border-neutral-800 bg-neutral-900/60 p-3"><h3 className="mb-3 flex items-center gap-2 border-b border-neutral-800 pb-3 text-xs font-bold text-white"><Icon className="h-4 w-4 text-sky-400" />{label}<span className="ml-auto font-mono text-neutral-400">{rows.length}</span></h3><div className="flex-1 space-y-2">{rows.map((item) => <button key={item.id} onClick={() => onSelectItem(item.id)} className="w-full rounded-xl border border-neutral-800 bg-neutral-950 p-3 text-left hover:border-neutral-600"><div className="mb-1 text-[10px] text-neutral-400">{item.format === 'short' ? 'Short' : 'Vídeo longo'} · {item.estimatedDuration}</div><div className="text-xs font-semibold text-white">{item.title}</div><div className="mt-2 text-[10px] text-neutral-500">{item.isDemo ? 'Exemplo demonstrativo' : item.niche}</div></button>)}{rows.length === 0 && <p className="rounded-lg border border-dashed border-neutral-800 p-4 text-center text-xs text-neutral-500"><Clock className="mx-auto mb-2 h-4 w-4" />Nenhum item</p>}</div></section>;
+    })}</div>
+  </div>
+);
